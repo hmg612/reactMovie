@@ -32,7 +32,7 @@ jobs:
       run: yarn build
     
     - name: zip create  # zip 파일을 만듭니다(파일명은 자유, 대신 아래 workflow에 적을 파일명과 동일하게 맞춰주세요).
-      run: zip -qq -r ./**build-fe.zip .**
+      run: zip -qq -r ./build-fe.zip .
       shell: bash
           
     - name: Configure AWS credentials
@@ -47,11 +47,11 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.SECRET_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}        
       run: |
-        aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://reactmovie/public/
+        aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://reactmovie/build-fe.zip
         
     - name: Deploy # Deploy to EC2
       run: aws deploy create-deployment
         --application-name react-movie-webservice
         --deployment-config-name CodeDeployDefault.AllAtOnce
         --deployment-group-name GROUP
-        --s3-location bucket=reactmovie,bundleType=zip,key=public/build-fe.zip
+        --s3-location bucket=reactmovie,bundleType=zip,key=build-fe.zip
